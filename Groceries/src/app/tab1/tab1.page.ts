@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
+import { GroceriesServiceProvider } from 'src/providers/groceries-service/groceries-service';
 
 @Component({
   selector: 'app-tab1',
@@ -12,22 +13,13 @@ export class Tab1Page {
 
   title = "Grocery";
 
-  items = [
-    {
-      name: "Milk",
-    quantity: 2
-    },
-    {
-      name: "Bread",
-      quantity: 1
-    },
-    {
-      name: "Eggs",
-      quantity: 12
-    }
-  ];
+  
 
-  constructor(public navCtrl: NavController, public toastCtrl: ToastController, public alertCtrl: AlertController) {}
+  constructor(public navCtrl: NavController, public toastCtrl: ToastController, public alertCtrl: AlertController, public dataService: GroceriesServiceProvider) {}
+
+  loadItems() {
+    return this.dataService.getItems();
+  }
 
   async removeItem(item: any, index: any) {
     console.log("Removing Item - ", item, index);
@@ -36,8 +28,8 @@ export class Tab1Page {
       duration: 3000
     });
     toast.present();
-
-    this.items.splice(index, 1);
+    
+    this.dataService.removeItem(index);
   }
 
   
@@ -46,6 +38,15 @@ export class Tab1Page {
     this.showAddItemPrompt();
   }
 
+  async editItem(item: any, index: any){
+    console.log("edit item - ", item, index);
+    const toast = this.toastCtrl.create({
+      message: 'Editing Item - ' + index + " ...",
+      duration: 3000
+    });
+    (await toast).present();
+    this.showEditItemPrompt(item, index);
+  }
   async showAddItemPrompt(){
     const prompt = this.alertCtrl.create({
       message: "Please enter item...",
@@ -70,11 +71,45 @@ export class Tab1Page {
           text: 'Save',
           handler: item => {
             console.log('Saved clicked', item)
-            this.items.push(item);
+            this.dataService.addItem(item);
           }
         }
       ]
       
+    });
+    (await (prompt)).present();
+  }
+
+  async showEditItemPrompt(item: any, index: any) {
+    const prompt = this.alertCtrl.create({
+      message: "Please edit item...",
+      inputs: [
+        {
+          name: 'name',
+          placeholder: 'Name',
+          value: item.name
+        },
+        {
+          name: 'quantity',
+          placeholder: 'Quantity',
+          value: item.quantity
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Save',
+          handler: item => {
+            console.log('Saved clicked', item);
+            this.dataService.editItem(item, index)
+          }
+        }
+      ]
     });
     (await (prompt)).present();
   }
