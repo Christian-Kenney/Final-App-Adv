@@ -1,7 +1,4 @@
-import { Component } from '@angular/core';
-import { NavController } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
-import { AlertController } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
 import { GroceriesServiceProvider } from 'src/providers/groceries-service/groceries-service';
 
 @Component({
@@ -9,108 +6,42 @@ import { GroceriesServiceProvider } from 'src/providers/groceries-service/grocer
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page {
+export class Tab1Page implements OnInit {
 
-  title = "Grocery";
+  categories: any[] | undefined;
+  newItemName: string | undefined;
+  newCategory: string | undefined;
 
-  
+  constructor(private groceryService: GroceriesServiceProvider) {}
 
-  constructor(public navCtrl: NavController, public toastCtrl: ToastController, public alertCtrl: AlertController, public dataService: GroceriesServiceProvider) {}
-
-  loadItems() {
-    return this.dataService.getItems();
+  ngOnInit() {
+    this.categories = this.groceryService.getCategories();
   }
 
-  async removeItem(item: any, index: any) {
-    console.log("Removing Item - ", item, index);
-    const toast = await this.toastCtrl.create({
-      message: 'Removing Item - ' + item.name + ' ...',
-      duration: 3000
-    });
-    toast.present();
-    
-    this.dataService.removeItem(index);
+  toggleItems(category: { showItems: boolean; }) {
+    category.showItems = !category.showItems;
   }
 
-  
-  addItem(){
-    console.log("add item")
-    this.showAddItemPrompt();
+  addItem(category: { items: { name: string; }[]; }) {
+    if (this.newItemName) {
+      category.items.push({name: this.newItemName});
+      this.newItemName = '';
+    }
   }
 
-  async editItem(item: any, index: any){
-    console.log("edit item - ", item, index);
-    const toast = this.toastCtrl.create({
-      message: 'Editing Item - ' + index + " ...",
-      duration: 3000
-    });
-    (await toast).present();
-    this.showEditItemPrompt(item, index);
-  }
-  async showAddItemPrompt(){
-    const prompt = this.alertCtrl.create({
-      message: "Please enter item...",
-      inputs: [
-        {
-          name: 'name',
-          placeholder: 'Name'
-        },
-        {
-          name: 'quantity',
-          placeholder: 'Quantity'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: data => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Save',
-          handler: item => {
-            console.log('Saved clicked', item)
-            this.dataService.addItem(item);
-          }
-        }
-      ]
-      
-    });
-    (await (prompt)).present();
+  deleteItem(category: { items: any[]; }, item: any) {
+    const index = category.items.indexOf(item);
+    if (index > -1) {
+      category.items.splice(index, 1);
+    }
   }
 
-  async showEditItemPrompt(item: any, index: any) {
-    const prompt = this.alertCtrl.create({
-      message: "Please edit item...",
-      inputs: [
-        {
-          name: 'name',
-          placeholder: 'Name',
-          value: item.name
-        },
-        {
-          name: 'quantity',
-          placeholder: 'Quantity',
-          value: item.quantity
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: data => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Save',
-          handler: item => {
-            console.log('Saved clicked', item);
-            this.dataService.editItem(item, index)
-          }
-        }
-      ]
-    });
-    (await (prompt)).present();
+  deleteCategory(category: any) {
+    this.groceryService.deleteCategory(category);
+  }
+
+  addCategory(categoryName: any) {
+    this.groceryService.addCategory(categoryName);
+    this.newCategory = "";
   }
 }

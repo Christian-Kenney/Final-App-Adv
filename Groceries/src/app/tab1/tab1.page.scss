@@ -1,0 +1,75 @@
+ion-header {
+    --ion-color-primary: #b19cd9;
+    --ion-color-primary-contrast: #ffffff;
+    --ion-color-primary-shade: #8a75c4;
+    --ion-color-primary-tint: #c9b4e0;
+  }
+  
+  ion-toolbar {
+    --background: #b19cd9;
+    --color: #ffffff;
+    text-align: center;
+    
+    
+  }
+  
+  ion-item-divider {
+    --background: #b19cd9;
+    --color: #000000;
+    font-weight: bold;
+    font-size: 20px;
+    
+    
+  }
+  
+  ion-icon[name='chevron-down'] {
+    --color: #b19cd9;
+    
+  }
+  
+  ion-icon[name='chevron-up'] {
+    --color: #b19cd9;
+  }
+  
+  ion-icon[name='trash'] {
+    --color: #b19cd9;
+  }
+  
+  ion-content {
+    --background: #d9b19c;
+  }
+  
+  ion-item-sliding {
+    --background: #e1ffc7;
+  }
+  
+  ion-input {
+    --background: #ffffff;
+    
+  }
+  
+  ion-button {
+    --background: #b19cd9;
+    --color: #ffffff;
+  }
+
+  ion-item-group{
+    --background: #b19cd9;
+    --color: #ffffff;
+  }
+
+  #categories{
+    --background:
+  }
+
+  ion-input{
+    --background: rgb(54, 52, 52);
+  }
+  ion-list{
+    --background: blue;
+  }
+
+  ion-title{
+    --text-align: center;
+  }
+ 
